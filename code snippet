@@ -1,0 +1,87 @@
+### 1. Presence & Emotion Recognition Pipeline
+* **Presence Polling:** Evaluates camera frames at 2-second intervals using DeepFace face-confidence scoring ($>0.5$ threshold triggers the session)[cite: 53, 61, 100].
+* **Multi-Frame Majority Voting:** Once a user is detected, captures 4 consecutive frames at 1-second intervals, discarding frames $<0.5$ confidence, and determines the dominant emotion class[cite: 53, 61, 100].
+* **Voice-Driven Confirmation Loop:** Speaks the predicted emotion via `eSpeak`, records user speech for 5 seconds, and retains or updates the emotional state via keyword parsing before querying the LLM[cite: 54, 61, 65, 100, 116].
+
+### 2. Conversational Generation (JSON Schema)
+The PC Flask server constraints `GPT-4o-mini` to enforce coordinated multimodal feedback[cite: 60, 64, 109]:
+```json
+{
+  "speech_text": "I hear how demanding the workload is. Remember to take small breaks.",
+  "eye_animation": "sad_soft",
+  "vibration_pattern": "slow_pulse"
+}
+```[cite: 64, 109]
+
+* **Supported Expressions:** `neutral`, `happy`, `sad`, `sad_soft`, `angry`, `fear`, `surprised`, `disgust`, `calm`, `focused`, `blink`[cite: 101, 102, 123, 124, 125].
+* **Supported Haptics:** `none`, `short_pulse` (3 rapid pulses), `slow_pulse` (rhythmic cat-purr bursts), `steady_light` (continuous micro-vibrations)[cite: 58, 109, 126, 127].
+
+---
+
+## 📊 Measured Performance & Benchmarks
+
+The system was evaluated through functional integration tests and instrumented runtime benchmarks under real operating conditions[cite: 49, 68, 74]:
+
+| Metric | Measured Value | Notes & Analysis |
+| :--- | :--- | :--- |
+| **Speech-to-Text WER** | **4.7%** (Corpus) | Evaluated over 10 benchmark sentences (64 words); 8/10 without errors[cite: 76, 78, 105]. |
+| **FER Accuracy (FER2013)** | **40.0%** (Macro F1: 0.34) | Evaluated across 35 test images[cite: 74, 78]. High recall on `happy` (0.80), strong bias toward `neutral`[cite: 75, 78]. |
+| **Server Turn Latency** | **4.27 s** (Mean) | Dominated by Whisper STT (2.23 s) and GPT-4o-mini (2.04 s)[cite: 77, 78]. |
+| **FER Frame Processing** | **0.86 s** | DeepFace inference on host PC CPU[cite: 77]. Initial cold-start: 6.73 s[cite: 77, 78]. |
+| **JSON Schema Compliance** | **29%** (1st try) / **100%** (Retry) | Automated conversational recovery mechanism prevented user-facing exceptions[cite: 77, 78]. |
+
+![Confusion Matrix](https://github.com/Malithi022/emotion-aware-companion-robot/blob/main/confusion_matrix.png)
+
+---
+
+## 🚀 Installation & Getting Started
+
+### 1. PC Server Setup (Host AI Engine)
+```bash
+git clone [https://github.com/Malithi022/emotion-aware-companion-robot.git](https://github.com/Malithi022/emotion-aware-companion-robot.git)
+cd emotion-aware-companion-robot/pc_server
+
+# Create virtual environment and install dependencies
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Export your OpenAI API Key
+export OPENAI_API_KEY="your-api-key-here"
+
+# Start the Flask API server (runs on port 5000)
+python pc_server.py
+```[cite: 106, 111]
+
+### 2. Raspberry Pi 4 Client Setup
+Enable SPI and I2S hardware interfaces via `/boot/firmware/config.txt`:
+```ini
+dtparam=spi=on
+dtoverlay=googlevoicehat-soundcard
+```[cite: 73, 95]
+
+Install audio dependencies and system tools:
+```bash
+sudo apt-get update
+sudo apt-get install -y espeak sox libsox-fmt-all alsa-utils python3-spidev
+```[cite: 112]
+
+Install Python requirements and start client loop:
+```bash
+cd emotion-aware-companion-robot/pi_client
+pip install -r requirements.txt
+
+# Set host PC IP inside pi_client.py (e.g., [http://192.168.1.100:5000](http://192.168.1.100:5000))
+python pi_client.py
+```[cite: 112]
+
+---
+
+## 👤 Author & Academic Context
+
+* **Author:** Malithi Elangasinha[cite: 25]  
+* **Degree:** B.Sc. (Hons) in Science and Technology (Mechatronics Specialization)[cite: 25]  
+* **Institution:** Department of Science and Technology, Faculty of Applied Sciences, Uva Wellassa University of Sri Lanka[cite: 25]  
+* **Supervisor:** Dr. A. R. P. C. C. J. Amarasinghe[cite: 25]  
+* **Co-Supervisor:** Ms. B. C. Liyanapathirana[cite: 25]  
+* **Contact:** melangasinha01@gmail.com[cite: 26]
