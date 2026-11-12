@@ -62,13 +62,13 @@ Built on a **distributed Raspberry Pi 4 + PC server architecture**, the system d
 
 ### 2. Conversational Generation (JSON Schema)
 The PC Flask server constraints `GPT-4o-mini` to enforce coordinated multimodal feedback[cite: 60, 64, 109]:
-```json
+json
 {
   "speech_text": "I hear how demanding the workload is. Remember to take small breaks.",
   "eye_animation": "sad_soft",
   "vibration_pattern": "slow_pulse"
 }
-```[cite: 64, 109]
+[cite: 64, 109]
 
 * **Supported Expressions:** `neutral`, `happy`, `sad`, `sad_soft`, `angry`, `fear`, `surprised`, `disgust`, `calm`, `focused`, `blink`[cite: 101, 102, 123, 124, 125].
 * **Supported Haptics:** `none`, `short_pulse` (3 rapid pulses), `slow_pulse` (rhythmic cat-purr bursts), `steady_light` (continuous micro-vibrations)[cite: 58, 109, 126, 127].
@@ -94,7 +94,7 @@ The system was evaluated through functional integration tests and instrumented r
 ## 🚀 Installation & Getting Started
 
 ### 1. PC Server Setup (Host AI Engine)
-```bash
+bash
 git clone [https://github.com/Malithi022/emotion-aware-companion-robot.git](https://github.com/Malithi022/emotion-aware-companion-robot.git)
 cd emotion-aware-companion-robot/pc_server
 
@@ -108,29 +108,29 @@ export OPENAI_API_KEY="your-api-key-here"
 
 # Start the Flask API server (runs on port 5000)
 python pc_server.py
-```[cite: 106, 111]
+[cite: 106, 111]
 
 ### 2. Raspberry Pi 4 Client Setup
 Enable SPI and I2S hardware interfaces via `/boot/firmware/config.txt`:
-```ini
+ini
 dtparam=spi=on
 dtoverlay=googlevoicehat-soundcard
-```[cite: 73, 95]
+[cite: 73, 95]
 
 Install audio dependencies and system tools:
-```bash
+bash
 sudo apt-get update
 sudo apt-get install -y espeak sox libsox-fmt-all alsa-utils python3-spidev
-```[cite: 112]
+[cite: 112]
 
 Install Python requirements and start client loop:
-```bash
+bash
 cd emotion-aware-companion-robot/pi_client
 pip install -r requirements.txt
 
 # Set host PC IP inside pi_client.py (e.g., [http://192.168.1.100:5000](http://192.168.1.100:5000))
 python pi_client.py
-```[cite: 112]
+[cite: 112]
 
 ---
 
