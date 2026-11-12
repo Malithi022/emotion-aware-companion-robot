@@ -51,4 +51,4 @@ Built on a **distributed Raspberry Pi 4 + PC server architecture**, the system d
 
 ## 🧠 Software Architecture & Workflow
 
-(https://github.com/Malithi022/emotion-aware-companion-robot/blob/main/system_architecture_flow.png)
+![Software Architecture & Workflow](https://github.com/Malithi022/emotion-aware-companion-robot/blob/main/system_architecture_flow.png)
